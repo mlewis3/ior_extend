@@ -1382,7 +1382,7 @@ static void PrintEarlyHeader()
 	if (rank != 0)
 		return;
 
-	printf("IOR-" META_VERSION ": MPI Coordinated Test of Parallel I/O\n");
+	printf("IOR- META_VERSION : MPI Coordinated Test of Parallel I/O\n");
 	printf("\n");
 	fflush(stdout);
 }

@@ -1,0 +1,18 @@
+IOR START
+	testFile = /projects/ExaHDF5/mlewis/benchmarks/newoutput.txt
+	filePerProc=1
+	api=MPIIO
+	repetitions=10
+        readFile=1
+        writeFile=1
+        checkWrite=0
+        checkRead=0
+        segmentCount=1
+        blockSize=50m
+        transferSize=1m
+	verbose=1
+        reordertasksrandom=1
+        reordertasksrandomseed=-113
+	RUN
+
+IOR STOP
