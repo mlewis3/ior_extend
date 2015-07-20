@@ -1,0 +1,231 @@
+aiori-HDF5.c:                sprintf(test->apiVersion, "%s-%u.%u.%u",
+aiori-HDF5.c:                        test->api, major, minor, release);
+aiori-HDF5.c:        strcat(test->apiVersion, " (Serial)");
+aiori-HDF5.c:        strcat(test->apiVersion, " (Parallel)");
+aiori-HDF5.c:                        test->apiVersion);
+aiori-MPIIO.c:        sprintf(test->apiVersion, "%s (version=%d, subversion=%d)",
+aiori-MPIIO.c:                test->api, version, subversion);
+aiori-MPIIO.c:        if (test->filePerProc == TRUE) {
+aiori-NCMPI.c:        sprintf(test->apiVersion, "%s (%s)", test->api, ncmpi_inq_libvers());
+aiori-POSIX.c:        strcpy(test->apiVersion, test->api);
+aiori-POSIX.c:        if (test->filePerProc == TRUE) {
+ior.c:        DisplayOutliers(test->numTasks, timer[shift + 0][rep],
+ior.c:                        "start time", access, test->outlierThreshold);
+ior.c:        DisplayOutliers(test->numTasks,
+ior.c:                        "elapsed create time", access, test->outlierThreshold);
+ior.c:        DisplayOutliers(test->numTasks,
+ior.c:                        test->outlierThreshold);
+ior.c:        DisplayOutliers(test->numTasks,
+ior.c:                        "elapsed close time", access, test->outlierThreshold);
+ior.c:        DisplayOutliers(test->numTasks, timer[shift + 5][rep], "end time",
+ior.c:                        access, test->outlierThreshold);
+ior.c:	IOR_param_t *params = &test->params;
+ior.c:	IOR_results_t *results = test->results;
+ior.c:                        rank, test->offset, (long long)size);
+ior.c:                                        test->offset +
+ior.c:                                 test->offset), transferCount);
+ior.c:                        ((first * sizeof(unsigned long long)) + test->offset));
+ior.c:                if (test->quitOnError == TRUE)
+ior.c:        if (test->checkWrite || test->checkRead) {
+ior.c:                        test->errorFound = TRUE;
+ior.c:                                test->timeStampSignatureValue,
+ior.c:                                test->timeStampSignatureValue);
+ior.c:	if (test->results != NULL)
+ior.c:	reps = test->params.repetitions;
+ior.c:	test->results = (IOR_results_t *)malloc(sizeof(IOR_results_t));
+ior.c:	if (test->results == NULL)
+ior.c:	test->results->writeTime = (double *)malloc(reps * sizeof(double));
+ior.c:	if (test->results->writeTime == NULL)
+ior.c:	memset(test->results->writeTime, 0, reps * sizeof(double));
+ior.c:	test->results->readTime = (double *)malloc(reps * sizeof(double));
+ior.c:	if (test->results->readTime == NULL)
+ior.c:	memset(test->results->readTime, 0, reps * sizeof(double));
+ior.c:        test->results->aggFileSizeFromStat =
+ior.c:        if (test->results->aggFileSizeFromStat == NULL)
+ior.c:        test->results->aggFileSizeFromXfer =
+ior.c:        if (test->results->aggFileSizeFromXfer == NULL)
+ior.c:        test->results->aggFileSizeForBW =
+ior.c:        if (test->results->aggFileSizeForBW == NULL)
+ior.c:	if (test->results != NULL) {
+ior.c:		free(test->results->aggFileSizeFromStat);
+ior.c:		free(test->results->aggFileSizeFromXfer);
+ior.c:		free(test->results->aggFileSizeForBW);
+ior.c:		free(test->results->readTime);
+ior.c:		free(test->results->writeTime);
+ior.c:		free(test->results);
+ior.c:        lo = (unsigned long long)test->timeStampSignatureValue;
+ior.c:        for (i = 0; i < test->transferSize / sizeof(unsigned long long); i++) {
+ior.c:        strcpy(initialTestFileName, test->testFileName);
+ior.c:        if (count > 1 && test->uniqueDir == TRUE)
+ior.c:        if (test->filePerProc) {
+ior.c:                                   rankOffset) % test->numTasks) % count]);
+ior.c:        if (test->filePerProc) {
+ior.c:                if (test->uniqueDir == TRUE) {
+ior.c:                        (rank + rankOffset) % test->numTasks);
+ior.c:        if (test->repCounter > -1) {
+ior.c:                sprintf(tmpString, ".%d", test->repCounter);
+ior.c:        sprintf(dir, "%s%d", dir, (rank + rankOffset) % test->numTasks);
+ior.c:		test->results->writeTime[rep] = totalTime;
+ior.c:		test->results->readTime[rep] = totalTime;
+ior.c:	bw = (double)test->results->aggFileSizeForBW[rep] / totalTime;
+ior.c:	PPDouble(LEFT, (double)test->params.blockSize / KIBIBYTE, " ");
+ior.c:	PPDouble(LEFT, (double)test->params.transferSize / KIBIBYTE, " ");
+ior.c:                if (test->reorderTasksRandom == TRUE) {
+ior.c:                if (test->reorderTasksRandom == TRUE) {
+ior.c:        *buffer = aligned_buffer_alloc(test->transferSize);
+ior.c:                *checkBuffer = aligned_buffer_alloc(test->transferSize);
+ior.c:                *readCheckBuffer = aligned_buffer_alloc(test->transferSize);
+ior.c:        fprintf(stdout, "TEST:\t%s=%d\n", "id", test->id);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "refnum", test->referenceNumber);
+ior.c:        fprintf(stdout, "\t%s=%s\n", "api", test->api);
+ior.c:        fprintf(stdout, "\t%s=%s\n", "platform", test->platform);
+ior.c:        fprintf(stdout, "\t%s=%s\n", "testFileName", test->testFileName);
+ior.c:        fprintf(stdout, "\t%s=%s\n", "hintsFileName", test->hintsFileName);
+ior.c:                test->deadlineForStonewalling);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "maxTimeDuration", test->maxTimeDuration);
+ior.c:                test->outlierThreshold);
+ior.c:        fprintf(stdout, "\t%s=%s\n", "options", test->options);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "nodes", test->nodes);
+ior.c:        fprintf(stdout, "\t%s=%lu\n", "memoryPerTask", (unsigned long) test->memoryPerTask);
+ior.c:        fprintf(stdout, "\t%s=%lu\n", "memoryPerNode", (unsigned long) test->memoryPerNode);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "repetitions", test->repetitions);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "multiFile", test->multiFile);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "interTestDelay", test->interTestDelay);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "fsync", test->fsync);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "fsYncperwrite", test->fsyncPerWrite);
+ior.c:                test->useExistingTestFile);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "showHints", test->showHints);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "uniqueDir", test->uniqueDir);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "showHelp", test->showHelp);
+ior.c:                test->individualDataSets);
+ior.c:                test->singleXferAttempt);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "readFile", test->readFile);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "writeFile", test->writeFile);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "filePerProc", test->filePerProc);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "reorderTasks", test->reorderTasks);
+ior.c:                test->reorderTasksRandom);
+ior.c:                test->reorderTasksRandomSeed);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "randomOffset", test->randomOffset);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "checkWrite", test->checkWrite);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "checkRead", test->checkRead);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "preallocate", test->preallocate);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "useFileView", test->useFileView);
+ior.c:        fprintf(stdout, "\t%s=%lld\n", "setAlignment", test->setAlignment);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "storeFileOffset", test->storeFileOffset);
+ior.c:                test->useSharedFilePointer);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "useO_DIRECT", test->useO_DIRECT);
+ior.c:                test->useStridedDatatype);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "keepFile", test->keepFile);
+ior.c:                test->keepFileWithError);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "quitOnError", test->quitOnError);
+ior.c:                test->setTimeStampSignature);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "collective", test->collective);
+ior.c:        fprintf(stdout, "\t%s=%lld", "segmentCount", test->segmentCount);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "gpfsHintAccess", test->gpfs_hint_access);
+ior.c:        fprintf(stdout, "\t%s=%d\n", "gpfsReleaseToken", test->gpfs_release_token);
+ior.c:        if (strcmp(test->api, "HDF5") == 0) {
+ior.c:        fprintf(stdout, "\t%s=%lld\n", "transferSize", test->transferSize);
+ior.c:        fprintf(stdout, "\t%s=%lld\n", "blockSize", test->blockSize);
+ior.c:	IOR_param_t *params = &test->params;
+ior.c:	IOR_results_t *results = test->results;
+ior.c:	IOR_param_t *params = &test->params;
+ior.c:	IOR_results_t *results = test->results;
+ior.c:	IOR_param_t *params = &test->params;
+ior.c:	IOR_results_t *results = test->results;
+ior.c:	IOR_param_t *params = &test->params;
+ior.c:	IOR_results_t *results = test->results;
+ior.c:        AioriBind(test->api);
+ior.c:        if (test->repetitions <= 0)
+ior.c:        if (test->numTasks <= 0)
+ior.c:        if (test->interTestDelay < 0)
+ior.c:        if (test->readFile != TRUE && test->writeFile != TRUE
+ior.c:            && test->checkRead != TRUE && test->checkWrite != TRUE)
+ior.c:        if ((test->deadlineForStonewalling > 0)
+ior.c:            && (test->checkWrite == TRUE || test->checkRead == TRUE))
+ior.c:        if (test->segmentCount < 0)
+ior.c:        if ((test->blockSize % sizeof(IOR_size_t)) != 0)
+ior.c:        if (test->blockSize < 0)
+ior.c:        if ((test->transferSize % sizeof(IOR_size_t)) != 0)
+ior.c:        if (test->setAlignment < 0)
+ior.c:        if (test->transferSize < 0)
+ior.c:        if (test->transferSize == 0) {
+ior.c:                if ((test->blockSize % test->transferSize) != 0)
+ior.c:        if (test->blockSize < test->transferSize)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0)
+ior.c:            && (test->blockSize < sizeof(IOR_size_t)
+ior.c:                || test->transferSize < sizeof(IOR_size_t)))
+ior.c:        if ((strcmp(test->api, "HDF5") == 0)
+ior.c:            && (test->blockSize < sizeof(IOR_size_t)
+ior.c:                || test->transferSize < sizeof(IOR_size_t)))
+ior.c:        if ((strcmp(test->api, "NCMPI") == 0)
+ior.c:            && (test->blockSize < sizeof(IOR_size_t)
+ior.c:                || test->transferSize < sizeof(IOR_size_t)))
+ior.c:        if ((test->useFileView == TRUE)
+ior.c:            &&((test->numTasks * test->blockSize) >
+ior.c:        if ((strcmp(test->api, "POSIX") != 0) && test->singleXferAttempt)
+ior.c:        if ((strcmp(test->api, "POSIX") != 0) && test->fsync)
+ior.c:        if ((strcmp(test->api, "MPIIO") != 0) && test->preallocate)
+ior.c:        if ((strcmp(test->api, "MPIIO") != 0) && test->useFileView)
+ior.c:        if ((strcmp(test->api, "MPIIO") != 0) && test->useSharedFilePointer)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0) && test->useSharedFilePointer)
+ior.c:        if ((strcmp(test->api, "MPIIO") != 0) && test->useStridedDatatype)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0) && test->useStridedDatatype)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0)
+ior.c:            && test->useStridedDatatype && (test->blockSize < sizeof(IOR_size_t)
+ior.c:                                            || test->transferSize <
+ior.c:        if ((strcmp(test->api, "POSIX") == 0) && test->showHints)
+ior.c:        if ((strcmp(test->api, "POSIX") == 0) && test->collective)
+ior.c:        if (test->reorderTasks == TRUE && test->reorderTasksRandom == TRUE)
+ior.c:        if (test->randomOffset && test->reorderTasksRandom
+ior.c:            && test->filePerProc == FALSE)
+ior.c:        if (test->randomOffset && test->reorderTasks
+ior.c:            && test->filePerProc == FALSE)
+ior.c:        if (test->randomOffset && test->checkRead)
+ior.c:        if (test->randomOffset && test->storeFileOffset)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0) && test->randomOffset
+ior.c:            && test->collective)
+ior.c:        if ((strcmp(test->api, "MPIIO") == 0) && test->randomOffset
+ior.c:            && test->useFileView)
+ior.c:        if ((strcmp(test->api, "HDF5") == 0) && test->randomOffset)
+ior.c:        if ((strcmp(test->api, "NCMPI") == 0) && test->randomOffset)
+ior.c:        if ((strcmp(test->api, "HDF5") != 0) && test->individualDataSets)
+ior.c:        if ((strcmp(test->api, "HDF5") == 0) && test->individualDataSets)
+ior.c:        if ((strcmp(test->api, "NCMPI") == 0) && test->filePerProc)
+ior.c:        if (test->noFill) {
+ior.c:                if (strcmp(test->api, "HDF5") != 0) {
+ior.c:                                test->apiVersion);
+ior.c:        if (test->useExistingTestFile && test->lustre_set_striping)
+ior.c:        offsets = (test->blockSize / test->transferSize) * test->segmentCount;
+ior.c:        for (i = 0; i < test->segmentCount; i++) {
+ior.c:                for (j = 0; j < (test->blockSize / test->transferSize); j++) {
+ior.c:                        offsetArray[k] = j * test->transferSize;
+ior.c:                        if (test->filePerProc) {
+ior.c:                                offsetArray[k] += i * test->blockSize;
+ior.c:                                    (i * test->numTasks * test->blockSize)
+ior.c:                                    + (pretendRank * test->blockSize);
+ior.c:                test->randomSeed = seed = random();
+ior.c:                seed = test->randomSeed;
+ior.c:        fileSize = test->blockSize * test->segmentCount;
+ior.c:        if (test->filePerProc == FALSE) {
+ior.c:                fileSize *= test->numTasks;
+ior.c:        for (i = 0; i < fileSize; i += test->transferSize) {
+ior.c:                if (test->filePerProc == FALSE) {
+ior.c:                        if ((random() % test->numTasks) == pretendRank) {
+ior.c:        if (test->filePerProc) {
+ior.c:                        offsetArray[i] = i * test->transferSize;
+ior.c:                for (i = 0; i < fileSize; i += test->transferSize) {
+ior.c:                        if ((random() % test->numTasks) == pretendRank) {
+ior.c:        SeedRandGen(test->testComm);    /* synchronize seeds across tasks */
+ior.c:        pretendRank = (rank + rankOffset) % test->numTasks;
+ior.c:        if (test->randomOffset) {
+ior.c:        hitStonewall = ((test->deadlineForStonewalling != 0)
+ior.c:                            > test->deadlineForStonewalling));
+ior.c:                test->offset = offsetArray[pairCnt];
+ior.c:                if (test->storeFileOffset == TRUE) {
+ior.c:                        FillBuffer(buffer, test, test->offset, pretendRank);
+ior.c:                transfer = test->transferSize;
+ior.c:                                  test, transfer, test->blockSize, &amtXferred,
+ior.c:                hitStonewall = ((test->deadlineForStonewalling != 0)
+ior.c:                                    > test->deadlineForStonewalling));
+ior.c:        if (access == WRITE && test->fsync == TRUE) {
+ior.c:                        test->id, iteration, (int)rank, timer[i][iteration],
