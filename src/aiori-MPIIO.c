@@ -254,6 +254,12 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                  */
         }
 
+#ifdef OPT
+        
+
+#endif
+
+
         /*
          * 'useFileView' uses derived datatypes and individual file pointers
          */
@@ -276,12 +282,14 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                                 length = 1;
                         }
                         if (param->collective) {
+                                printf ("Rank-- %d useFileView collective \n",rank);
                                 /* individual, collective call */
                                 MPI_CHECK(Access_all
                                           (*(MPI_File *) fd, buffer, length,
                                            param->transferType, &status),
                                           "cannot access collective");
                         } else {
+                                printf ("Rank-- %d useFileView noncollective \n",rank);
                                 /* individual, noncollective call */
                                 MPI_CHECK(Access
                                           (*(MPI_File *) fd, buffer, length,
@@ -291,6 +299,7 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                         length *= param->transferSize;  /* for return value in bytes */
                 }
         } else {
+               
                 /*
                  * !useFileView does not use derived datatypes, but it uses either
                  * shared or explicit file pointers
@@ -315,20 +324,33 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                         }
                 } else {
                         if (param->collective) {
+                               printf ("Rank-- %d useShared collective \n",rank);
                                 /* explicit, collective call */
                                 MPI_CHECK(Access_at_all
                                           (*(MPI_File *) fd, param->offset,
                                            buffer, length, MPI_BYTE, &status),
                                           "cannot access explicit, collective");
                         } else {
+                                printf ("Rank-- %d useShared noncollective \n",rank);
                                 /* explicit, noncollective call */
+#ifdef OPT
+                        if (rank == 0 || rank == 1) {
+                                MPI_CHECK(Access_at (*(MPI_File *) fd, param->offset, 
+                                          buffer, length, MPI_BYTE, &status),
+                                          "cannot access explicit, noncollective");
+
+                        }
+
+#elif
                                 MPI_CHECK(Access_at
                                           (*(MPI_File *) fd, param->offset,
                                            buffer, length, MPI_BYTE, &status),
                                           "cannot access explicit, noncollective");
+#endif
                         }
                 }
         }
+        printf(" rank : %d param offset %d , param transfer size %d , length %d \n",rank,param->offset,param->transferSize,length);
         return (length);
 }
 

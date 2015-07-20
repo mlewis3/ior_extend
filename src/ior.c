@@ -36,10 +36,13 @@
 /* globals used by other files, also defined "extern" in ior.h */
 int numTasksWorld = 0;
 int rank = 0;
+
 int rankOffset = 0;
 int tasksPerNode = 0;           /* tasks per node */
 int verbose = VERBOSE_0;        /* verbose output */
 MPI_Comm testComm;
+MPI_Comm oddComm;
+MPI_Comm evenComm;
 
 /* file scope globals */
 extern char **environ;
@@ -88,6 +91,7 @@ int main(int argc, char **argv)
         int i;
         IOR_test_t *tests_head;
         IOR_test_t *tptr;
+        int color;
 
         /*
          * check -h option from commandline without starting MPI;
@@ -128,6 +132,17 @@ int main(int argc, char **argv)
         }
 
 	PrintHeader(argc, argv);
+
+#ifdef OPT
+        color = rank % 2;
+        /* Creating communicators */
+        if (color == 0) {
+          MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &evenComm),"Even group communicator init error");
+        } else if (color == 1) {
+          MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &oddComm),"Odd group communicator init error");
+        } 
+
+#endif 
 
         /* perform each test */
 	for (tptr = tests_head; tptr != NULL; tptr = tptr->next) {
