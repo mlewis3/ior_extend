@@ -22,7 +22,7 @@ extern int rank;
 extern int rankOffset;
 extern int tasksPerNode;
 extern int verbose;
-extern MPI_Comm twoLeadersComm;
+extern MPI_Comm leadersComm;
 extern MPI_Comm testComm;
 
 /******************************************************************************/
@@ -134,6 +134,12 @@ typedef struct
 
     int id;                          /* test's unique ID */
     int intraTestBarriers;           /* barriers between open/op and op/close */
+
+#ifdef OPT
+    /* number of cores that will handle the read/write */
+    int numleaders;
+#endif
+
 } IOR_param_t;
 
 /* each pointer is to an array, each of length equal to the number of

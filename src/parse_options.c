@@ -284,6 +284,16 @@ void DecodeDirective(char *line, IOR_param_t *params)
                                 option);
                 MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
         }
+
+#ifdef OPT
+        if (strcasecmp(option,"numleaders") == 0) {
+            if (atoi(value) == 0) {
+               fprintf(stdout, "Must specify more than 0 leaders with the numleaders option  \"%s\"\n",option);
+                MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
+             }
+           param->numleaders = atoi(value);
+        }
+#endif
 }
 
 /*

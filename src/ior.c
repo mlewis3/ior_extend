@@ -41,7 +41,7 @@ int rankOffset = 0;
 int tasksPerNode = 0;           /* tasks per node */
 int verbose = VERBOSE_0;        /* verbose output */
 MPI_Comm testComm;
-MPI_Comm twoLeadersComm;
+MPI_Comm leadersComm;
 
 /* file scope globals */
 extern char **environ;
@@ -133,9 +133,9 @@ int main(int argc, char **argv)
 	PrintHeader(argc, argv);
 
 #ifdef OPT
-        color = rank % 2;
+        color = rank % tests_head->params.numleaders ;
         /* Creating communicators */
-        MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &twoLeadersComm),"Group communicator");
+        MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &leadersComm),"Group communicator");
 
 #endif 
 
