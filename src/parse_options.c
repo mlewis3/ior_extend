@@ -291,7 +291,7 @@ void DecodeDirective(char *line, IOR_param_t *params)
                fprintf(stdout, "Must specify more than 0 leaders with the numleaders option  \"%s\"\n",option);
                 MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
              }
-           param->numleaders = atoi(value);
+           params->numleaders = atoi(value);
         }
 #endif
 }
