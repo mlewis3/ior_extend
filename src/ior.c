@@ -41,8 +41,7 @@ int rankOffset = 0;
 int tasksPerNode = 0;           /* tasks per node */
 int verbose = VERBOSE_0;        /* verbose output */
 MPI_Comm testComm;
-MPI_Comm oddComm;
-MPI_Comm evenComm;
+MPI_Comm twoLeadersComm;
 
 /* file scope globals */
 extern char **environ;
@@ -136,11 +135,7 @@ int main(int argc, char **argv)
 #ifdef OPT
         color = rank % 2;
         /* Creating communicators */
-        if (color == 0) {
-          MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &evenComm),"Even group communicator init error");
-        } else if (color == 1) {
-          MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &oddComm),"Odd group communicator init error");
-        } 
+        MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &twoLeadersComm),"Group communicator");
 
 #endif 
 

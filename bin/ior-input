@@ -1,0 +1,19 @@
+IOR START
+	testFile=/home/mlewis/ior_extend/bin/output.txt
+	filePerProc=1
+  keepFile=1
+	api=MPIIO
+	repetitions=1
+        readFile=1
+        writeFile=1
+        checkWrite=0
+        checkRead=0
+        segmentCount=1
+        blockSize=5m
+        transferSize=1m
+	verbose=1
+        reordertasksrandom=1
+        reordertasksrandomseed=-113
+	RUN
+
+IOR STOP

@@ -333,7 +333,6 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                         } else {
                                 printf ("Rank-- %d useShared noncollective \n",rank);
                                 /* explicit, noncollective call */
-#ifdef OPT
                         if (rank == 0 || rank == 1) {
                                 MPI_CHECK(Access_at (*(MPI_File *) fd, param->offset, 
                                           buffer, length, MPI_BYTE, &status),
@@ -341,12 +340,10 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
 
                         }
 
-#elif
                                 MPI_CHECK(Access_at
                                           (*(MPI_File *) fd, param->offset,
                                            buffer, length, MPI_BYTE, &status),
                                           "cannot access explicit, noncollective");
-#endif
                         }
                 }
         }

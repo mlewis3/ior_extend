@@ -22,6 +22,7 @@ extern int rank;
 extern int rankOffset;
 extern int tasksPerNode;
 extern int verbose;
+extern MPI_Comm twoLeadersComm;
 extern MPI_Comm testComm;
 
 /******************************************************************************/
