@@ -37,6 +37,14 @@
 int numTasksWorld = 0;
 int rank = 0;
 
+#ifdef OPT
+IOR_offset_t leaderOffset = 0;
+IOR_offset_t leaderLength = 0;
+int localRank = 0;
+int color = 0;
+int rank_chunk = 0;
+#endif
+
 int rankOffset = 0;
 int tasksPerNode = 0;           /* tasks per node */
 int verbose = VERBOSE_0;        /* verbose output */
@@ -90,7 +98,6 @@ int main(int argc, char **argv)
         int i;
         IOR_test_t *tests_head;
         IOR_test_t *tptr;
-        int color;
 
         /*
          * check -h option from commandline without starting MPI;
@@ -133,9 +140,29 @@ int main(int argc, char **argv)
 	PrintHeader(argc, argv);
 
 #ifdef OPT
-        color = rank % tests_head->params.numleaders ;
+    //    int rank_chunk;
+        if ( (numTasksWorld % 2 == 0)  && ( tests_head->params.numleaders % 2 == 0) ) {
+          rank_chunk = numTasksWorld / tests_head->params.numleaders;
+        } else {
+          rank_chunk = numTasksWorld / tests_head->params.numleaders + 1;
+        }
+        
+       
+
+        color = rank / rank_chunk;
+        printf("Chunk %d Color %d Rank %d \n", rank_chunk, color, rank);
+        /* color = rank % tests_head->params.numleaders ; */
+
+        
+
         /* Creating communicators */
         MPI_CHECK(MPI_Comm_split(MPI_COMM_WORLD, color, rank, &leadersComm),"Group communicator");
+       
+
+        /* Detect the 0 rank of each color in the leadersComm group  */
+        int blockSize = tests_head->params.blockSize;
+        MPI_CHECK(MPI_Comm_rank(leadersComm, &localRank), "Checking local rank");
+        
 
 #endif 
 
@@ -2418,15 +2445,70 @@ static IOR_offset_t *GetOffsetArraySequential(IOR_param_t * test,
         IOR_offset_t offsets;
         IOR_offset_t *offsetArray;
 
+#ifdef OPT
+       
+        int iterations  =  test->blockSize / test->transferSize;
+        test->transferSize = leaderLength / iterations; 
+
+        if (localRank == 0) {
+          /* printf("Global rank %d rank Local rank %d color %d , num cores %d , numleaders %d  blockSize %d \n", rank,localRank,color,numTasksWorld, tests_head->params.numleaders, blockSize); */
+           leaderOffset = 0;
+           int atLimit = 1;
+           for (int rankInc = 0; atLimit == 1; rankInc++) {
+               int calcColor = rankInc / rank_chunk;
+               if (calcColor == color) {
+                 atLimit = 0;
+                 continue;
+               }
+
+               leaderOffset += test->blockSize;
+               /* printf("Rank %d Calc color %d color : %d leaderOffset %d \n", rank, calcColor, color, leaderOffset); */
+           }
+
+           /*Determine size of group */
+           int groupSize;
+           MPI_Comm_size(leadersComm,&groupSize);
+           for (int i = 0; i < groupSize; i++) {
+              leaderLength += test->blockSize;
+           }
+
+           printf("-- Key %d Leader offset  %d Leader length  %d \n", rank, leaderOffset, leaderLength);
+
+          offsets = iterations;
+          
+
+          /* setup empty array */
+          offsetArray =
+              (IOR_offset_t *) malloc((offsets + 1) * sizeof(IOR_offset_t));
+          if (offsetArray == NULL)
+                ERR("malloc() failed");
+          offsetArray[offsets] = -1;      /* set last offset with -1 */
+        }
+        
+#else
         /* count needed offsets */
         offsets = (test->blockSize / test->transferSize) * test->segmentCount;
-
         /* setup empty array */
         offsetArray =
             (IOR_offset_t *) malloc((offsets + 1) * sizeof(IOR_offset_t));
         if (offsetArray == NULL)
                 ERR("malloc() failed");
         offsetArray[offsets] = -1;      /* set last offset with -1 */
+       
+#endif
+
+#ifdef OPT
+        if (localRank == 0) {
+           offsetArray[0] = leaderOffset;
+            
+           printf(" Key %d Offset index %d offset %d transfersize %d \n ",rank,  0, offsetArray[0], test->transferSize);
+           for ( i = 1; i < iterations; i++ ) {
+             offsetArray[i] = offsetArray[i-1] + test->transferSize;
+             printf(" Key %d Offset index %d offset %d transfersize %d \n ", rank, i, offsetArray[i], test->transferSize);
+           }
+        }
+
+#else
 
         /* fill with offsets */
         for (i = 0; i < test->segmentCount; i++) {
@@ -2442,6 +2524,7 @@ static IOR_offset_t *GetOffsetArraySequential(IOR_param_t * test,
                         k++;
                 }
         }
+#endif
 
         return (offsetArray);
 }
@@ -2552,9 +2635,15 @@ static IOR_offset_t WriteOrRead(IOR_param_t * test, void *fd, int access)
                         && ((GetTimeStamp() - startForStonewall)
                             > test->deadlineForStonewalling));
 
+#ifdef OPT
+        if ( localRank ==  0)  {
+        
+#endif
+
         /* loop over offsets to access */
         while ((offsetArray[pairCnt] != -1) && !hitStonewall) {
                 test->offset = offsetArray[pairCnt];
+                printf(" Rank %d Offset %d  Transfer size %d \n ",rank, test->offset, test->transferSize);
                 /*
                  * fills each transfer with a unique pattern
                  * containing the offset into the file
@@ -2568,11 +2657,23 @@ static IOR_offset_t WriteOrRead(IOR_param_t * test, void *fd, int access)
                             backend->xfer(access, fd, buffer, transfer, test);
                         if (amtXferred != transfer)
                                 ERR("cannot write to file");
+#ifdef OPT
+/* MPI_GATHER */
+
+
+#endif
+
                 } else if (access == READ) {
                         amtXferred =
                             backend->xfer(access, fd, buffer, transfer, test);
                         if (amtXferred != transfer)
                                 ERR("cannot read from file");
+#ifdef OPT
+/* MPI_SCATTER */
+
+
+#endif
+
                 } else if (access == WRITECHECK) {
                         memset(checkBuffer, 'a', transfer);
                         amtXferred =
@@ -2596,6 +2697,12 @@ static IOR_offset_t WriteOrRead(IOR_param_t * test, void *fd, int access)
                                 && ((GetTimeStamp() - startForStonewall)
                                     > test->deadlineForStonewalling));
         }
+
+#ifdef OPT
+       }
+
+       
+#endif 
 
         totalErrorCount += CountErrors(test, access, errors);
 
