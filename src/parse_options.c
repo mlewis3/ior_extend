@@ -278,15 +278,10 @@ void DecodeDirective(char *line, IOR_param_t *params)
 		RecalculateExpectedFileSize(params);
         } else if (strcasecmp(option, "summaryalways") == 0) {
                 params->summary_every_test = atoi(value);
-        } else {
-                if (rank == 0)
-                        fprintf(stdout, "Unrecognized parameter \"%s\"\n",
-                                option);
-                MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
         }
 
 #ifdef OPT
-        if (strcasecmp(option,"numleaders") == 0) {
+        else if (strcasecmp(option,"numleaders") == 0) {
             if (atoi(value) == 0) {
                fprintf(stdout, "Must specify more than 0 leaders with the numleaders option  \"%s\"\n",option);
                 MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
@@ -294,6 +289,13 @@ void DecodeDirective(char *line, IOR_param_t *params)
            params->numleaders = atoi(value);
         }
 #endif
+         else {
+                if (rank == 0)
+                        fprintf(stdout, "Unrecognized parameter \"%s\"\n",
+                                option);
+                MPI_CHECK(MPI_Abort(MPI_COMM_WORLD, -1), "MPI_Abort() error");
+        }
+
 }
 
 /*

@@ -141,8 +141,14 @@ static void *MPIIO_Open(char *testFileName, IOR_param_t * param)
                 ShowHints(&mpiHints);
                 fprintf(stdout, "}\n");
         }
+   
+#ifdef OPT
+        
+        MPI_CHECK(MPI_File_open(leadersComm, testFileName, fd_mode, mpiHints, fd), "Can not open file ");
+#else
         MPI_CHECK(MPI_File_open(comm, testFileName, fd_mode, mpiHints, fd),
                   "cannot open file");
+#endif
 
         /* show hints actually attached to file handle */
         if (rank == 0 && param->showHints) {
@@ -162,6 +168,7 @@ static void *MPIIO_Open(char *testFileName, IOR_param_t * param)
                                                              param->numTasks)),
                           "cannot preallocate file");
         }
+
         /* create file view */
         if (param->useFileView) {
                 /* create contiguous transfer datatype */
@@ -324,14 +331,17 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                         }
                 } else {
                         if (param->collective) {
-                               printf ("Rank-- %d useShared collective \n",rank);
+                               // printf ("Rank-- %d useShared collective \n",rank);
+                                printf("collective  rank : %d offset %d , transfer size %d , length %d \n",rank,param->offset,param->transferSize,length);
+                                
                                 /* explicit, collective call */
                                 MPI_CHECK(Access_at_all
                                           (*(MPI_File *) fd, param->offset,
                                            buffer, length, MPI_BYTE, &status),
                                           "cannot access explicit, collective");
                         } else {
-                                printf ("Rank-- %d useShared noncollective \n",rank);
+                                /* printf ("Rank-- %d useShared noncollective \n",rank); */
+                                printf(" rank : %d offset %d , transfer size %d , length %d \n",rank,param->offset,param->transferSize,length);
                                 /* explicit, noncollective call */
                         if (rank == 0 || rank == 1) {
                                 MPI_CHECK(Access_at (*(MPI_File *) fd, param->offset, 
@@ -347,7 +357,6 @@ static IOR_offset_t MPIIO_Xfer(int access, void *fd, IOR_size_t * buffer,
                         }
                 }
         }
-        printf(" rank : %d param offset %d , param transfer size %d , length %d \n",rank,param->offset,param->transferSize,length);
         return (length);
 }
 

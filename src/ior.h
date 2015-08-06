@@ -19,6 +19,12 @@
 
 extern int numTasksWorld;
 extern int rank;
+
+#ifdef OPT
+extern IOR_offset_t leaderOffset;
+extern IOR_offset_t leaderLength;
+#endif
+
 extern int rankOffset;
 extern int tasksPerNode;
 extern int verbose;
